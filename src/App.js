@@ -64,7 +64,7 @@ class App extends Component {
 
   componentDidMount() {
     axios
-      .get('http://8fb15045.ngrok.io/api/members')
+      .get('http:localhost:5000/api/members')
       .then(response => {
         var suggestions = response.data.map((member, index) => ({
           value: index,
@@ -104,7 +104,7 @@ class App extends Component {
     	     "long": position.coords.longitude
         }
 
-        axios.post('http://8fb15045.ngrok.io/api/signin', data)
+        axios.post('http://localhost:5000/api/signin', data)
           .then(response => this.setState({'message': response.data, 'done': true}))
           .catch(function (error) {
             console.log(error)
