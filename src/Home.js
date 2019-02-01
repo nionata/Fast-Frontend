@@ -60,7 +60,7 @@ class Home extends Component {
       'code': '',
       'member': '',
       'members': [],
-      'done': true
+      'processing': false
     }
   }
 
@@ -90,30 +90,27 @@ class Home extends Component {
   handleSignIn = () => event => {
     event.preventDefault()
 
-    if(!this.state.done) {
-      console.log("Still proccessing")
-      return
-    } else {
-      this.setState({'done': false})
-    }
+    if(!this.state.processing) {
+      this.setState({'processing': true, 'message': 'Signing in...'})
+      
+      if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          var data = {
+            "event code": parseInt(this.state.code),
+      	     "member id": this.state.member.member_id,
+      	     "lat": position.coords.latitude,
+      	     "long": position.coords.longitude
+          }
 
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        var data = {
-          "event code": parseInt(this.state.code),
-    	     "member id": this.state.member.member_id,
-    	     "lat": position.coords.latitude,
-    	     "long": position.coords.longitude
-        }
-
-        axios.post(API_URL + '/api/signin', data)
-          .then(response => this.setState({'message': response.data, 'done': true}))
-          .catch(function (error) {
-            console.log(error)
-          })
-      })
-    } else {
-      this.setState({'message': 'Location services are not enabled'})
+          axios.post(API_URL + '/api/signin', data)
+            .then(response => this.setState({'message': response.data, 'processing': false}))
+            .catch(function (error) {
+              console.log(error)
+            })
+        })
+      } else {
+        this.setState({'message': 'Location services are not enabled'})
+      }
     }
   }
 
