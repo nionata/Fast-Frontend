@@ -7,6 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import Select from 'react-select';
 import Button from '@material-ui/core/Button';
 
+const API_URL = 'http://localhost:5000'
+
 const styles = theme => ({
   root: {
     position: 'relative',
@@ -64,7 +66,7 @@ class Home extends Component {
 
   componentDidMount() {
     axios
-      .get('http:localhost:5000/api/members')
+      .get(API_URL + '/api/members')
       .then(response => {
         var suggestions = response.data.map((member, index) => ({
           value: index,
@@ -104,7 +106,7 @@ class Home extends Component {
     	     "long": position.coords.longitude
         }
 
-        axios.post('http://localhost:5000/api/signin', data)
+        axios.post(API_URL + '/api/signin', data)
           .then(response => this.setState({'message': response.data, 'done': true}))
           .catch(function (error) {
             console.log(error)
@@ -128,7 +130,7 @@ class Home extends Component {
 
         console.log(data);
 
-        axios.post('http://localhost:5000/api/event', data)
+        axios.post(API_URL + '/api/event', data)
           .then(response => console.log(response.data))
           .catch(function (error) {
             console.log(error)
