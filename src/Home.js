@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Select from 'react-select';
 import Button from '@material-ui/core/Button';
 
-const API_URL = 'http://localhost:5000'
+const API_URL = 'http://localhost:5000';
 
 const styles = theme => ({
   root: {
@@ -92,7 +92,7 @@ class Home extends Component {
 
     if(!this.state.processing) {
       this.setState({'processing': true, 'message': 'Signing in...'})
-      
+
       if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
           var data = {
