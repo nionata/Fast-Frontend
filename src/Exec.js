@@ -15,21 +15,34 @@ import Tab from '@material-ui/core/Tab';
 import MUIDataTable from "mui-datatables";
 import NewEvent from './NewEvent';
 import Moment from 'react-moment';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import People from '@material-ui/icons/People';
+import Event from '@material-ui/icons/Event';
 
 const API_URL = 'http://localhost:5000'
 
 const styles = theme => ({
   root: {
     position: 'relative',
+    display: 'flex'
   },
   appbar: {
     flexGrow: 1,
-    backgroundColor: "#ffc107"
+    backgroundColor: "#ffc107",
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  toolbar: {
+    marginTop: '20vh',
   },
   content: {
     flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
+    height: '100%',
     backgroundColor: '#4a148c'
   },
   appBarSpacer: theme.mixins.toolbar,
@@ -67,7 +80,7 @@ const styles = theme => ({
     padding: '5vw',
     margin: 'auto',
     marginTop: '10vh',
-    marginBottom: '10vh',
+    marginBottom: '0vh',
     width: '100%'
   },
   eventsHeadingContainer: {
@@ -80,7 +93,13 @@ const styles = theme => ({
   },
   eventsHeading: {
     position: 'relative'
-  }
+  },
+  drawer: {
+    width: '15vw'
+  },
+  drawerPaper: {
+    width: '15vw'
+  },
 })
 
 class Exec extends Component {
@@ -174,6 +193,20 @@ class Exec extends Component {
             <h1>Fast</h1>
           </Toolbar>
         </AppBar>
+        <Drawer className={classes.drawer} variant="permanent" classes={{paper: classes.drawerPaper,}}>
+          <div className={classes.toolbar}>
+            <List>
+              <ListItem button>
+                <ListItemIcon><People/></ListItemIcon>
+                <ListItemText primary="Members" />
+              </ListItem>
+              <ListItem button>
+                <ListItemIcon><Event/></ListItemIcon>
+                <ListItemText primary="Events" />
+              </ListItem>
+            </List>
+          </div>
+        </Drawer>
         <div className={classes.content}>
           <Grid container spacing={0}>
             <Grid item xs={6} className={classes.vertSection}>
