@@ -14,6 +14,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import MUIDataTable from "mui-datatables";
 import NewEvent from './NewEvent';
+import Moment from 'react-moment';
 
 const API_URL = 'http://localhost:5000'
 
@@ -70,7 +71,7 @@ const styles = theme => ({
     width: '100%'
   },
   eventsHeadingContainer: {
-    marginBottom: '5vh'
+    marginBottom: '2vh'
   },
   eventsButton: {
     position: 'absolute',
@@ -94,14 +95,7 @@ class Exec extends Component {
       },
       events: {
         data: [],
-        list: [{
-          event_id: 0,
-          event_name: "Test",
-          event_start: 2,
-          event_end: 1,
-          event_lat: 29.65308,
-          event_long: -82.33996
-        }],
+        list: [],
         value: 0,
         open: false
       }
@@ -162,6 +156,7 @@ class Exec extends Component {
   renderEvent = (event) => {
     return (
       <Paper key={event.event_id}>
+        <Moment date={event.event_start}/>
         <p>{event.event_name}</p>
       </Paper>
     )
