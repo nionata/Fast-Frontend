@@ -99,7 +99,8 @@ class Home extends Component {
             "event code": parseInt(this.state.code),
       	     "member id": this.state.member.member_id,
       	     "lat": position.coords.latitude,
-      	     "long": position.coords.longitude
+      	     "long": position.coords.longitude,
+             "time": Date.now()
           }
 
           axios.post(API_URL + '/api/signin', data)
@@ -114,7 +115,7 @@ class Home extends Component {
     }
   }
 
-  startEvent = name => {
+  /*startEvent = name => {
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         var data = {
@@ -136,7 +137,7 @@ class Home extends Component {
     } else {
       this.setState({'message': 'Location services are not enabled'})
     }
-  }
+  }*/
 
   render() {
     const { classes } = this.props

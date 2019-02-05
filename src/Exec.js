@@ -18,11 +18,6 @@ import moment from 'moment';
 
 const API_URL = 'http://localhost:5000'
 
-const event = [
-  ['Nick', 'Ionata', moment(new Date(1549349713)).fromNow()],
-  ['Walker', 'Bean', moment(154934).fromNow()],
-]
-
 const styles = theme => ({
   root: {
     display: 'flex'
@@ -33,15 +28,14 @@ const styles = theme => ({
     zIndex: theme.zIndex.drawer + 1,
   },
   toolbar: {
-    marginTop: '19vh',
+    marginTop: '20vh',
   },
   content: {
     flexGrow: 1,
     height: '100%',
     backgroundColor: '#4a148c',
-    padding: '5vw',
+    padding: '15vh',
     margin: 'auto',
-    marginTop: '10vh',
   },
   logo: {
     height: 50,
@@ -68,8 +62,7 @@ class Exec extends Component {
       events: {
         data: [],
         list: [],
-        value: 0,
-        open: false
+        event: []
       }
     }
   }
@@ -91,7 +84,27 @@ class Exec extends Component {
     axios
       .get(API_URL + '/api/events')
       .then(response => {
-        var list = response.data
+        var days = {}
+
+        response.data.forEach(event => {
+          var date = moment(event.event_start*1000).format("ddd MMM D")
+
+          if(days[date]) {
+            days[date].push(event)
+          } else {
+            days[date] = [event]
+          }
+        })
+
+        var list = []
+
+        for(var day in days) {
+          list.push({
+            value: day,
+            times: days[day]
+          })
+        }
+
         this.setState(prevState => ({
           events: {
             ...prevState.events,
@@ -134,6 +147,20 @@ class Exec extends Component {
     )
   }
 
+  handleEventClick = id => {
+    axios
+      .get(API_URL + '/api/event/' + id)
+      .then(response => {
+        var event = response.data.map(record => [record.member_first_name, record.member_last_name, moment(record.attendance_time_in * 1000).fromNow()])
+        this.setState(prevState => ({
+          events: {
+            ...prevState.events,
+            event
+          }
+        }))
+      })
+  }
+
   render() {
     const { classes } = this.props
     const { members, events } = this.state
@@ -161,7 +188,7 @@ class Exec extends Component {
           </div>
         </Drawer>
         <div className={classes.content}>
-          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={null} event={event}/>}
+          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events.list} event={events.event} handleEventClick={this.handleEventClick}/>}
         </div>
       </div>
     )
