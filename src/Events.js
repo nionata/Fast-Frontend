@@ -10,12 +10,11 @@ import EventsList from './EventsList';
 
 const styles = theme => ({
   root: {
-    height: '75vh'
   },
   section: {
   },
   events: {
-    height: '75vh'
+    height: '80vh'
   },
   eventsHeader: {
   },
@@ -33,7 +32,7 @@ const styles = theme => ({
 
 class Events extends Component {
   render() {
-    const { classes, events, event, handleEventClick } = this.props
+    const { classes, events, handleEventClick } = this.props
     return (
       <Grid container className={classes.root} spacing={40}>
         <Grid item xs={6} className={classes.section}>
@@ -46,15 +45,15 @@ class Events extends Component {
               className={classes.eventsHeader}
             />
             <CardContent>
-              <EventsList data={events} className={classes.list} handleEventClick={handleEventClick} />
+              <EventsList data={events.list} className={classes.list} handleEventClick={handleEventClick} />
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={6} className={classes.section}>
           <div className={classes.event}>
             <MUIDataTable
-              title={"Chapter - 1/22"}
-              data={event}
+              title={events.event.event_name}
+              data={events.attendance}
               columns={["First Name", "Last Name", "When"]} //attendance_id, attendance_time_in, member_first_name, member_last_name
               options={{reponsive: 'stacked', print: false, viewColumns: false, filter: false, selectableRows: false}}
               />

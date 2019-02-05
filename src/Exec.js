@@ -62,7 +62,8 @@ class Exec extends Component {
       events: {
         data: [],
         list: [],
-        event: []
+        event: [],
+        attendance: []
       }
     }
   }
@@ -151,11 +152,12 @@ class Exec extends Component {
     axios
       .get(API_URL + '/api/event/' + id)
       .then(response => {
-        var event = response.data.map(record => [record.member_first_name, record.member_last_name, moment(record.attendance_time_in * 1000).fromNow()])
+        var attendance = response.data.map(record => [record.member_first_name, record.member_last_name, moment(record.attendance_time_in * 1000).fromNow()])
         this.setState(prevState => ({
           events: {
             ...prevState.events,
-            event
+            event: prevState.events.data.find(event => event.event_id === id),
+            attendance
           }
         }))
       })
@@ -188,7 +190,7 @@ class Exec extends Component {
           </div>
         </Drawer>
         <div className={classes.content}>
-          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events.list} event={events.event} handleEventClick={this.handleEventClick}/>}
+          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events} handleEventClick={this.handleEventClick}/>}
         </div>
       </div>
     )

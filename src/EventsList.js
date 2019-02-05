@@ -8,7 +8,7 @@ import moment from 'moment';
 
 const styles = theme => ({
   list: {
-    maxHeight: 500,
+    maxHeight: '60vh',
     overflow: 'auto',
   },
   listSection: {
