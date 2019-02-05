@@ -3,33 +3,28 @@ import {withStyles} from '@material-ui/core/styles';
 import axios from 'axios';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import TextField from '@material-ui/core/TextField';
-import Select from 'react-select';
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import MUIDataTable from "mui-datatables";
-import NewEvent from './NewEvent';
 import Moment from 'react-moment';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import People from '@material-ui/icons/People';
 import Event from '@material-ui/icons/Event';
+import Members from './Members';
+import Events from './Events';
+import moment from 'moment';
 
 const API_URL = 'http://localhost:5000'
 
+const event = [
+  ['Nick', 'Ionata', moment(new Date(1549349713)).fromNow()],
+  ['Walker', 'Bean', moment(154934).fromNow()],
+]
+
 const styles = theme => ({
   root: {
-    position: 'relative',
     display: 'flex'
   },
   appbar: {
@@ -38,61 +33,19 @@ const styles = theme => ({
     zIndex: theme.zIndex.drawer + 1,
   },
   toolbar: {
-    marginTop: '20vh',
+    marginTop: '19vh',
   },
   content: {
     flexGrow: 1,
     height: '100%',
-    backgroundColor: '#4a148c'
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200,
-  },
-  box: {
-    width: '75vw',
+    backgroundColor: '#4a148c',
+    padding: '5vw',
     margin: 'auto',
-    marginTop: '25vh',
-    height: '50vh',
-    position: 'relative'
-  },
-  container: {
-    width: "100%"
-  },
-  searchBox: {
-    width: '100%',
-    margin: 5,
-    marginTop: 20
-  },
-  button: {
-    margin: 20,
-    position: 'absolute',
-    left: 0,
-    bottom: 0
+    marginTop: '10vh',
   },
   logo: {
     height: 50,
     marginRight: 10
-  },
-  vertSection: {
-    padding: '5vw',
-    margin: 'auto',
-    marginTop: '10vh',
-    marginBottom: '0vh',
-    width: '100%'
-  },
-  eventsHeadingContainer: {
-    marginBottom: '2vh'
-  },
-  eventsButton: {
-    position: 'absolute',
-    right: 0,
-    top: 0
-  },
-  eventsHeading: {
-    position: 'relative'
   },
   drawer: {
     width: '15vw'
@@ -107,7 +60,7 @@ class Exec extends Component {
     super(props)
 
     this.state = {
-      user: '',
+      view: 1,
       members: {
         data: [],
         table: [],
@@ -196,11 +149,11 @@ class Exec extends Component {
         <Drawer className={classes.drawer} variant="permanent" classes={{paper: classes.drawerPaper,}}>
           <div className={classes.toolbar}>
             <List>
-              <ListItem button>
+              <ListItem button onClick={() => this.setState({view: 0})}>
                 <ListItemIcon><People/></ListItemIcon>
                 <ListItemText primary="Members" />
               </ListItem>
-              <ListItem button>
+              <ListItem button onClick={() => this.setState({view: 1})}>
                 <ListItemIcon><Event/></ListItemIcon>
                 <ListItemText primary="Events" />
               </ListItem>
@@ -208,36 +161,8 @@ class Exec extends Component {
           </div>
         </Drawer>
         <div className={classes.content}>
-          <Grid container spacing={0}>
-            <Grid item xs={6} className={classes.vertSection}>
-              <div className={classes.memberTable}>
-                <MUIDataTable
-                  title={"Members"}
-                  data={members.table}
-                  columns={["First Name", "Last Name", "Points"]}
-                  options={{reponsive: 'stacked', filterType: 'multiselect', print: false, selectableRows: false}}
-                  onSearchChange={(text) => console.log(text)}
-                  />
-              </div>
-            </Grid>
-            <Grid item xs={6} className={classes.vertSection}>
-              <Card className={classes.eventsHeadingContainer}>
-                <CardContent>
-                  <div className={classes.eventsHeading}>
-                    <h3>Events</h3>
-                    <Button className={classes.eventsButton} onClick={this.handleEventButton}>New Event</Button>
-                  </div>
-                  <Tabs value={events.value} centered indicatorColor="primary" onChange={this.handleTabs}>
-                    <Tab label="Upcoming"/>
-                    <Tab label="Past"/>
-                  </Tabs>
-                </CardContent>
-              </Card>
-              {events.list.map(event => this.renderEvent(event))}
-            </Grid>
-          </Grid>
+          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={null} event={event}/>}
         </div>
-        <NewEvent open={events.open} onNewEvent={this.onNewEvent} handleEventButton={this.handleEventButton}/>
       </div>
     )
   }
