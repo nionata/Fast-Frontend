@@ -76,6 +76,9 @@ class Home extends Component {
         this.setState({'members': response.data, suggestions})
       })
     window.map = this;
+
+    axios
+      .get(API_URL + '/api/add', {withCredentials: true})
   }
 
   handleChange = name => event => {
@@ -103,7 +106,7 @@ class Home extends Component {
              "time": Date.now()
           }
 
-          axios.post(API_URL + '/api/signin', data)
+          axios.post(API_URL + '/api/signin', data, {withCredentials: true})
             .then(response => this.setState({'message': response.data, 'processing': false}))
             .catch(function (error) {
               console.log(error)
