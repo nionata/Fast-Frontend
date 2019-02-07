@@ -32,7 +32,7 @@ const styles = theme => ({
 
 class Events extends Component {
   render() {
-    const { classes, events, handleEventClick } = this.props
+    const { classes, events, handleGetEvent } = this.props
     return (
       <Grid container className={classes.root} spacing={40}>
         <Grid item xs={6} className={classes.section}>
@@ -45,7 +45,7 @@ class Events extends Component {
               className={classes.eventsHeader}
             />
             <CardContent>
-              <EventsList data={events.list} className={classes.list} handleEventClick={handleEventClick} />
+              <EventsList data={events.list} className={classes.list} handleGetEvent={handleGetEvent} />
             </CardContent>
           </Card>
         </Grid>

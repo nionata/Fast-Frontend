@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import {withStyles} from '@material-ui/core/styles';
-import axios from 'axios'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import TextField from '@material-ui/core/TextField';
 import Select from 'react-select';
 import Button from '@material-ui/core/Button';
-
-const API_URL = 'http://localhost:5000';
+import { getMembers, signIn } from './calls';
 
 const styles = theme => ({
   root: {
@@ -65,8 +63,11 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get(API_URL + '/api/members')
+    this.handleGetMembers()
+  }
+
+  handleGetMembers = () => {
+    getMembers()
       .then(response => {
         var suggestions = response.data.map((member, index) => ({
           value: index,
@@ -75,10 +76,7 @@ class Home extends Component {
         console.log(response.data);
         this.setState({'members': response.data, suggestions})
       })
-    window.map = this;
-
-    axios
-      .get(API_URL + '/api/add', {withCredentials: true})
+      .catch(err => console.log(err))
   }
 
   handleChange = name => event => {
@@ -106,41 +104,15 @@ class Home extends Component {
              "time": Date.now()
           }
 
-          axios.post(API_URL + '/api/signin', data, {withCredentials: true})
+          signIn(data)
             .then(response => this.setState({'message': response.data, 'processing': false}))
-            .catch(function (error) {
-              console.log(error)
-            })
+            .catch(err => console.log(err))
         })
       } else {
         this.setState({'message': 'Location services are not enabled'})
       }
     }
   }
-
-  /*startEvent = name => {
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        var data = {
-          "name": name,
-    	    "type": 1,
-          "end": (Date.now()/1000)+1800,
-    	    "lat": position.coords.latitude,
-    	    "long": position.coords.longitude
-        }
-
-        console.log(data);
-
-        axios.post(API_URL + '/api/event', data)
-          .then(response => console.log(response.data))
-          .catch(function (error) {
-            console.log(error)
-          })
-      })
-    } else {
-      this.setState({'message': 'Location services are not enabled'})
-    }
-  }*/
 
   render() {
     const { classes } = this.props

@@ -25,7 +25,7 @@ const styles = theme => ({
 
 class EventsList extends Component {
   render() {
-    const { classes, data, handleEventClick } = this.props
+    const { classes, data, handleGetEvent } = this.props
     return (
       <List className={classes.list} subheader={<li />}>
         {data.map(day => (
@@ -33,7 +33,7 @@ class EventsList extends Component {
             <ul className={classes.ul}>
               <ListSubheader className={classes.listHeader}>{day.value}</ListSubheader>
               {day.times.map(event => (
-                <ListItem button onClick={() => handleEventClick(event.event_id)} key={event.event_id}>
+                <ListItem button onClick={() => handleGetEvent(event.event_id)} key={event.event_id}>
                   <ListItemText primary={moment(event.event_start).format("h mm A")} secondary={moment(event.event_end).format("h mm A")}/>
                   <ListItemText primary={event.event_name} />
                 </ListItem>

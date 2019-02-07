@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {withStyles} from '@material-ui/core/styles';
-import axios from 'axios';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Paper from '@material-ui/core/Paper';
@@ -15,8 +14,7 @@ import Event from '@material-ui/icons/Event';
 import Members from './Members';
 import Events from './Events';
 import moment from 'moment';
-
-const API_URL = 'http://localhost:5000'
+import { getMembers, getEvents, getEvent } from './calls';
 
 const styles = theme => ({
   root: {
@@ -69,8 +67,12 @@ class Exec extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get(API_URL + '/api/members')
+    this.handleGetMembers()
+    this.handleGetEvents()
+  }
+
+  handleGetMembers = () => {
+    getMembers()
       .then(response => {
         var table = response.data.map(member => [member.member_first_name, member.member_last_name, member.member_points])
         this.setState(prevState => ({
@@ -81,9 +83,10 @@ class Exec extends Component {
           }
         }))
       })
+  }
 
-    axios
-      .get(API_URL + '/api/events')
+  handleGetEvents = () => {
+    getEvents()
       .then(response => {
         var days = {}
 
@@ -111,6 +114,20 @@ class Exec extends Component {
             ...prevState.events,
             data: response.data,
             list
+          }
+        }))
+      })
+  }
+
+  handleGetEvent = id => {
+    getEvent(id)
+      .then(response => {
+        var attendance = response.data.map(record => [record.member_first_name, record.member_last_name, moment(record.attendance_time_in * 1000).fromNow()])
+        this.setState(prevState => ({
+          events: {
+            ...prevState.events,
+            event: prevState.events.data.find(event => event.event_id === id),
+            attendance
           }
         }))
       })
@@ -148,20 +165,29 @@ class Exec extends Component {
     )
   }
 
-  handleEventClick = id => {
-    axios
-      .get(API_URL + '/api/event/' + id)
-      .then(response => {
-        var attendance = response.data.map(record => [record.member_first_name, record.member_last_name, moment(record.attendance_time_in * 1000).fromNow()])
-        this.setState(prevState => ({
-          events: {
-            ...prevState.events,
-            event: prevState.events.data.find(event => event.event_id === id),
-            attendance
-          }
-        }))
+  /*startEvent = name => {
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        var data = {
+          "name": name,
+    	    "type": 1,
+          "end": (Date.now())+1800,
+    	    "lat": position.coords.latitude,
+    	    "long": position.coords.longitude
+        }
+
+        console.log(data);
+
+        axios.post(API_URL + '/api/event', data)
+          .then(response => console.log(response.data))
+          .catch(function (error) {
+            console.log(error)
+          })
       })
-  }
+    } else {
+      this.setState({'message': 'Location services are not enabled'})
+    }
+  }*/
 
   render() {
     const { classes } = this.props
@@ -190,7 +216,7 @@ class Exec extends Component {
           </div>
         </Drawer>
         <div className={classes.content}>
-          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events} handleEventClick={this.handleEventClick}/>}
+          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events} handleGetEvent={this.handleGetEvent}/>}
         </div>
       </div>
     )
