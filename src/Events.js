@@ -83,7 +83,6 @@ class Events extends Component {
               onChange={(e) => updateEvents({name: 'name', data: e.target.value})}
             />
             <TextField
-              autoFocus
               margin="dense"
               id="end"
               label="Event End"
