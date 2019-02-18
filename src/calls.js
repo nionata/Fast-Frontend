@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://fastapp.pythonanywhere.com/api',
+  baseURL: 'https://fastapp.pythonanywhere.com/api',
   withCredentials: true
 });
 
