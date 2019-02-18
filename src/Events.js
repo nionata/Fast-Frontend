@@ -8,6 +8,13 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 import EventsList from './EventsList';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+//import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+
 const styles = theme => ({
   root: {
   },
@@ -32,14 +39,14 @@ const styles = theme => ({
 
 class Events extends Component {
   render() {
-    const { classes, events, handleGetEvent } = this.props
+    const { classes, events, handleGetEvent, handleNewEvent, updateEvents } = this.props
     return (
       <Grid container className={classes.root} spacing={40}>
         <Grid item xs={6} className={classes.section}>
           <Card className={classes.events}>
             <CardHeader
               action={
-                <Button className={classes.button} onClick={null}>New Event</Button>
+                <Button className={classes.button} onClick={() => updateEvents({name: 'open', data: true})}>New Event</Button>
               }
               title="Events"
               className={classes.eventsHeader}
@@ -59,6 +66,41 @@ class Events extends Component {
               />
           </div>
         </Grid>
+        <Dialog
+          open={events.open}
+          onClose={() => updateEvents({name: 'open', data: false})}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Add New Event</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Event Name"
+              type="text"
+              fullWidth
+              onChange={(e) => updateEvents({name: 'name', data: e.target.value})}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="end"
+              label="Event End"
+              type="number"
+              fullWidth
+              onChange={(e) => updateEvents({name: 'end', data: e.target.value})}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => updateEvents({name: 'open', data: false})} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleNewEvent} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
     )
   }

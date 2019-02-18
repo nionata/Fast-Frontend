@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Paper from '@material-ui/core/Paper';
-import Moment from 'react-moment';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -14,7 +12,8 @@ import Event from '@material-ui/icons/Event';
 import Members from './Members';
 import Events from './Events';
 import moment from 'moment';
-import { getMembers, getEvents, getEvent } from './calls';
+import Snackbar from '@material-ui/core/Snackbar';
+import { getMembers, getEvents, getEvent, addEvent } from './calls';
 
 const styles = theme => ({
   root: {
@@ -61,7 +60,11 @@ class Exec extends Component {
         data: [],
         list: [],
         event: [],
-        attendance: []
+        attendance: [],
+        code: '',
+        open: false,
+        name: '',
+        ends: ''
       }
     }
   }
@@ -133,53 +136,32 @@ class Exec extends Component {
       })
   }
 
-  handleTabs = (events, value) => {
-    this.setState(prevState => ({
-      events: {
-        ...prevState.events,
-        value
-      }
-    }))
-  }
-
-  handleEventButton = () => {
-    this.setState(prevState => ({
-      events: {
-        ...prevState.events,
-        open: !prevState.events.open
-      }
-    }))
-  }
-
-  onNewEvent = (code) => {
-    this.handleEventButton()
-    alert(code)
-  }
-
-  renderEvent = (event) => {
-    return (
-      <Paper key={event.event_id}>
-        <Moment date={event.event_start}/>
-        <p>{event.event_name}</p>
-      </Paper>
-    )
-  }
-
-  /*startEvent = name => {
+  handleNewEvent = () => {
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
+        const { name, end } = this.state.events
         var data = {
           "name": name,
     	    "type": 1,
-          "end": (Date.now())+1800,
+          "end": (Date.now() + (end * 60)),
     	    "lat": position.coords.latitude,
     	    "long": position.coords.longitude
         }
 
         console.log(data);
 
-        axios.post(API_URL + '/api/event', data)
-          .then(response => console.log(response.data))
+        addEvent(data)
+          .then(response => {
+            this.setState(prevState => ({
+              events: {
+                ...prevState.events,
+                open: !prevState.events.open,
+                code: response.data.code,
+                name: '',
+                ends: ''
+              }
+            }))
+          })
           .catch(function (error) {
             console.log(error)
           })
@@ -187,7 +169,17 @@ class Exec extends Component {
     } else {
       this.setState({'message': 'Location services are not enabled'})
     }
-  }*/
+  }
+
+  updateEvents = change => {
+    const { name, data } = change
+    this.setState(prevState => ({
+      events: {
+        ...prevState.events,
+        [name]: data
+      }
+    }))
+  }
 
   render() {
     const { classes } = this.props
@@ -216,8 +208,19 @@ class Exec extends Component {
           </div>
         </Drawer>
         <div className={classes.content}>
-          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events} handleGetEvent={this.handleGetEvent}/>}
+          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events} handleGetEvent={this.handleGetEvent} updateEvents={this.updateEvents} handleNewEvent={this.handleNewEvent}/>}
         </div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={events.code !== ''}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">Event Code: {events.code}</span>}
+        />
       </div>
     )
   }
