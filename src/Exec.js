@@ -13,7 +13,7 @@ import Members from './Members';
 import Events from './Events';
 import moment from 'moment';
 import Snackbar from '@material-ui/core/Snackbar';
-import { getMembers, getEvents, getEvent, addEvent } from './calls';
+import { getMembers, getEvents, getMember, getEvent, addEvent } from './calls';
 
 const styles = theme => ({
   root: {
@@ -55,6 +55,8 @@ class Exec extends Component {
       members: {
         data: [],
         table: [],
+        member: '',
+        attendance: [],
       },
       events: {
         data: [],
@@ -136,6 +138,43 @@ class Exec extends Component {
       })
   }
 
+  handleGetMember = (row, indexes) => {
+    const member = this.state.members.data[indexes.dataIndex]
+    console.log(member.member_id);
+    getMember(member.member_id)
+      .then(response => {
+        console.log(response);
+        var days = {}
+
+        response.data.forEach(event => {
+          var date = moment(event.event_start*1000).format("ddd MMM D")
+
+          if(days[date]) {
+            days[date].push(event)
+          } else {
+            days[date] = [event]
+          }
+        })
+
+        var attendance = []
+
+        for(var day in days) {
+          attendance.push({
+            value: day,
+            times: days[day]
+          })
+        }
+
+        this.setState(prevState => ({
+          members: {
+            ...prevState.members,
+            attendance,
+            member
+          }
+        }))
+      })
+  }
+
   handleNewEvent = () => {
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -181,6 +220,16 @@ class Exec extends Component {
     }))
   }
 
+  updateMembers = change => {
+    const { name, data } = change
+    this.setState(prevState => ({
+      members: {
+        ...prevState.members,
+        [name]: data
+      }
+    }))
+  }
+
   render() {
     const { classes } = this.props
     const { members, events } = this.state
@@ -208,7 +257,7 @@ class Exec extends Component {
           </div>
         </Drawer>
         <div className={classes.content}>
-          {this.state.view === 0 ? <Members data={members.table} /> : <Events events={events} handleGetEvent={this.handleGetEvent} updateEvents={this.updateEvents} handleNewEvent={this.handleNewEvent}/>}
+          {this.state.view === 0 ? <Members members={members} handleGetMember={this.handleGetMember} updateMembers={this.updateMembers}/> : <Events events={events} handleGetEvent={this.handleGetEvent} updateEvents={this.updateEvents} handleNewEvent={this.handleNewEvent}/>}
         </div>
         <Snackbar
           anchorOrigin={{

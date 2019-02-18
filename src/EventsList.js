@@ -33,7 +33,7 @@ class EventsList extends Component {
             <ul className={classes.ul}>
               <ListSubheader className={classes.listHeader}>{day.value}</ListSubheader>
               {day.times.map(event => (
-                <ListItem button onClick={() => handleGetEvent(event.event_id)} key={event.event_id}>
+                <ListItem button onClick={() => handleGetEvent(event.event_id)} key={event.event_id || event.attendance_id}>
                   <ListItemText primary={moment(event.event_start).format("h mm A")} secondary={moment(event.event_end).format("h mm A")}/>
                   <ListItemText primary={event.event_name} />
                 </ListItem>
