@@ -6,7 +6,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import EventsList from './EventsList';
 
 const styles = theme => ({
@@ -32,7 +31,7 @@ class Members extends Component {
         <MUIDataTable
           title={"Members"}
           data={members.table}
-          columns={["First Name", "Last Name", "Points"]}
+          columns={["First Name", "Last Name"]}
           options={options}
           />
         <Dialog

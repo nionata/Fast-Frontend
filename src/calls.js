@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://fastapp.pythonanywhere.com/api',
-  withCredentials: true
+  baseURL: 'http://localhost:5000/api',
+  // withCredentials: true
 });
 
 export const getMembers = () => {

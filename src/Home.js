@@ -73,7 +73,6 @@ class Home extends Component {
           value: index,
           label: member.member_first_name + " " + member.member_last_name
         }))
-        console.log(response.data);
         this.setState({'members': response.data, suggestions})
       })
       .catch(err => console.log(err))
@@ -116,7 +115,6 @@ class Home extends Component {
 
   render() {
     const { classes } = this.props
-    console.log(this.state);
     return (
       <div className={classes.root}>
         <div className={classes.content}>
