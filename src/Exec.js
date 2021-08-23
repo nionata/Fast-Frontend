@@ -79,7 +79,7 @@ class Exec extends Component {
   handleGetMembers = () => {
     getMembers()
       .then(response => {
-        var table = response.data.map(member => [member.member_first_name, member.member_last_name, member.member_points])
+        var table = response.data.map(member => [member.member_first_name, member.member_last_name])
         this.setState(prevState => ({
           members: {
             ...prevState.members,
@@ -140,10 +140,8 @@ class Exec extends Component {
 
   handleGetMember = (row, indexes) => {
     const member = this.state.members.data[indexes.dataIndex]
-    console.log(member.member_id);
     getMember(member.member_id)
       .then(response => {
-        console.log(response);
         var days = {}
 
         response.data.forEach(event => {
@@ -179,16 +177,16 @@ class Exec extends Component {
     if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         const { name, end } = this.state.events
-        var data = {
+        const start = Date.now()/1000
+        const data = {
           "name": name,
-    	    "type": 1,
-          "end": (Date.now() + (end * 60)),
-    	    "lat": position.coords.latitude,
-    	    "long": position.coords.longitude
+          "start": start,
+          "end": start+(end*60),
+          "lat": position.coords.latitude,
+          "long": position.coords.longitude
         }
-
-        console.log(data);
-
+        console.log(data)
+      
         addEvent(data)
           .then(response => {
             this.setState(prevState => ({
@@ -200,6 +198,9 @@ class Exec extends Component {
                 ends: ''
               }
             }))
+          })
+          .then(() => {
+            this.handleGetEvents()
           })
           .catch(function (error) {
             console.log(error)
@@ -233,7 +234,6 @@ class Exec extends Component {
   render() {
     const { classes } = this.props
     const { members, events } = this.state
-    console.log(this.state)
     return (
       <div className={classes.root}>
         <AppBar className={classes.appbar}>
